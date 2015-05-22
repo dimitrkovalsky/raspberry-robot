@@ -7,7 +7,12 @@ import java.io.IOException;
  */
 public class Runner {
     public static void main(String[] args) throws IOException {
-        Receiver receiver = new Receiver();
+        Receiver receiver;
+        if(args != null && args.length > 0) {
+            receiver = new Receiver(args[0]);
+        }          else {
+            receiver = new Receiver();
+        }
         new Thread(receiver).start();
         System.in.read();
     }
