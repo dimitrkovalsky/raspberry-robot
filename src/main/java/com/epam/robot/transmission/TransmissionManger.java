@@ -3,11 +3,12 @@ package com.epam.robot.transmission;
 import com.epam.robot.helpers.JsonHelper;
 import com.epam.robot.messages.GenericMessage;
 import com.epam.robot.messages.KeyPressedMessage;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.function.Consumer;
@@ -19,8 +20,8 @@ public class TransmissionManger implements Runnable {
     private static final int PORT = 5555;
     private Consumer<KeyPressedMessage> keyConsumer;
     private Handler handler;
-    private String address = "10.24.9.41";
-//    private String address = "127.0.0.1";
+   // private String address = "10.24.9.41";
+    private String address = "127.0.0.1";
 
     public TransmissionManger(Consumer<KeyPressedMessage> keyConsumer) {
         this.keyConsumer = keyConsumer;
@@ -59,7 +60,7 @@ public class TransmissionManger implements Runnable {
     private class Handler {
         private Socket socket;
         private DataInputStream in;
-        private DataOutputStream out;
+        private BufferedWriter writer;
 
         public Handler(Socket socket) {
             try {
@@ -68,8 +69,7 @@ public class TransmissionManger implements Runnable {
                 OutputStream sout = socket.getOutputStream();
 
                 in = new DataInputStream(sin);
-                out = new DataOutputStream(sout);
-                out.writeBytes("After connect");
+                writer = new BufferedWriter(new OutputStreamWriter(sout));
                 new Thread(this::read).start();
             } catch(Exception e) {
                 System.err.println("[TransmissionManger] error : " + e.getMessage());
@@ -96,8 +96,8 @@ public class TransmissionManger implements Runnable {
         public void send(String msg) {
             try {
                 System.out.println("Send : " + msg);
-                out.writeBytes(msg);
-//                out.flush();
+                writer.write(msg);
+                writer.flush();
             } catch(IOException e) {
                 System.err.println("[TransmissionManger] error : " + e.getMessage());
             }

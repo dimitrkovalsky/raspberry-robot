@@ -89,33 +89,6 @@ public class Scope {
             }
         }
     }
-//    public void setFrequency(double freq) {
-//        boolean wasActive = active;
-//        stop();
-//        synchronized (lock) {
-//            frequency = freq;
-//            samplesTaken = line.getFormat().getSampleRate() / frequency * cycles;
-//        }
-//        if (wasActive) {
-//            start();
-//        }
-//    }
-//    public void setCycles(int cycles) {
-//        System.out.println(cycles);
-//        boolean wasActive = active;
-//        active = false;
-//        stop();
-//        synchronized (lock) {
-//            System.out.println(cycles);
-//            this.cycles = cycles;
-//            samplesTaken = line.getFormat().getSampleRate() / frequency * cycles;
-//        }
-//        System.out.println(cycles);
-//        if (wasActive) {
-//            start();
-//        }
-//        System.out.println(cycles);
-//    }
 
     protected void finalize() throws Throwable {
         super.finalize();
@@ -141,36 +114,13 @@ public class Scope {
                 line.start();
                 while(active) {
                     line.read(sample, 0, samples);
-                    //  Graphics2D c = (Graphics2D) getGraphics();
-//                    if (true) {
-//                        g.setColor(new Color(226,226,226));
-//                        g.clearRect(0, -127, samples, 256);
-//                        g.fillRect(0, -127, samples, 256);
-//                        g.setColor(new Color(45,206,218));
-//                        int next, last = sample[0];
-//                        double[] x = new double[samples];
-//                        double[] y = new double[samples];
-//                        for (int i = 1; i < samples; i++) {
-//                            next = sample[i] * 3;
-//                            g.drawLine(i, last, i, next);
-//                            last = next;
-//
-//                            // System.out.println("[" + last + ", " + next + "]");
-//                        }
-//
-//                        WritableImage wr = null;
-//                        if (buf != null) {
-//                            wr = new WritableImage(buf.getWidth(), buf.getHeight());
-//                            PixelWriter pw = wr.getPixelWriter();
-//                            for (int x1 = 0; x1 < buf.getWidth(); x1++) {
-//                                for (int y1 = 0; y1 < buf.getHeight(); y1++) {
-//                                    pw.setArgb(x1, y1, buf.getRGB(x1, y1));
-//                                }
-//                            }
-//                        }
-//                        controller.updateImage(wr);
-                    //consumer.accept(sample);
+
                     consumer.accept(new VoiceSampleMessage(sample));
+                    try {
+                        Thread.sleep(1000);
+                    } catch(InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             line.stop();
