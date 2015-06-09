@@ -12,13 +12,17 @@ public class Runner {
     public static void main(String[] args) throws IOException {
         TransmissionManger transmission;
         GPIOController controller = new GPIOController();
+        VoiceController voiceController;
         if(args != null && args.length > 0) {
-            transmission = new TransmissionManger(args[0], controller::onMessage);
+            String ip = args[0];
+            transmission = new TransmissionManger(ip, controller::onMessage);
+            voiceController = new VoiceController(ip);
         } else {
             transmission = new TransmissionManger(controller::onMessage);
+            voiceController = new VoiceController();
         }
         new Thread(transmission).start();
-        VoiceController voiceController = new VoiceController(transmission);
+        new Thread(voiceController).start();
         System.in.read();
     }
 
