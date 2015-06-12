@@ -1,7 +1,7 @@
-package com.epam.robot.helpers;
+package com.liberty.robot.helpers;
 
-import com.epam.robot.common.MessageTypes;
-import com.epam.robot.messages.GenericMessage;
+import com.liberty.robot.common.MessageTypes;
+import com.liberty.robot.messages.GenericMessage;
 
 /**
  * Created by Dmytro_Kovalskyi on 27.05.2015.

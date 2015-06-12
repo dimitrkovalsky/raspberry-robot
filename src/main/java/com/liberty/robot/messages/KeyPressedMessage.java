@@ -1,6 +1,6 @@
-package com.epam.robot.messages;
+package com.liberty.robot.messages;
 
-import com.epam.robot.common.MessageTypes;
+import com.liberty.robot.common.MessageTypes;
 
 /**
  * User: dimitr

@@ -1,8 +1,9 @@
-package com.epam.robot.transmission;
+package com.liberty.robot.transmission;
 
-import com.epam.robot.helpers.JsonHelper;
-import com.epam.robot.messages.GenericMessage;
-import com.epam.robot.messages.KeyPressedMessage;
+import com.liberty.robot.common.ConnectionProperties;
+import com.liberty.robot.helpers.JsonHelper;
+import com.liberty.robot.messages.GenericMessage;
+import com.liberty.robot.messages.KeyPressedMessage;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -17,7 +18,6 @@ import java.util.function.Consumer;
  * Created by Dmytro_Kovalskyi on 13.05.2015.
  */
 public class TransmissionManger implements Runnable {
-    private static final int PORT = 5555;
     private Consumer<KeyPressedMessage> keyConsumer;
     private Handler handler;
    // private String address = "10.24.9.41";
@@ -49,8 +49,8 @@ public class TransmissionManger implements Runnable {
     public void run() {
         try {
             InetAddress ipAddress = InetAddress.getByName(address);
-            System.out.println("Connecting to " + address + " and port " + PORT);
-            Socket socket = new Socket(ipAddress, PORT);
+            System.out.println("Connecting to " + address + " and port " + ConnectionProperties.MESSAGE_PORT);
+            Socket socket = new Socket(ipAddress, ConnectionProperties.MESSAGE_PORT);
             handler = new Handler(socket);
         } catch(Exception e) {
             System.err.println("[TransmissionManger] error connecting to server " + e.getMessage());

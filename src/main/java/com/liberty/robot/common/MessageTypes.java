@@ -1,4 +1,4 @@
-package com.epam.robot.common;
+package com.liberty.robot.common;
 
 /**
  * Created by Dmytro_Kovalskyi on 11.07.2014.

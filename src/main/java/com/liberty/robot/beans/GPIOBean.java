@@ -1,4 +1,4 @@
-package com.epam.robot.beans;
+package com.liberty.robot.beans;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;

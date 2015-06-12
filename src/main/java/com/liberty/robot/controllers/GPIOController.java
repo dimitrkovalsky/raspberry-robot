@@ -1,7 +1,7 @@
-package com.epam.robot.controllers;
+package com.liberty.robot.controllers;
 
-import com.epam.robot.beans.GPIOBean;
-import com.epam.robot.messages.KeyPressedMessage;
+import com.liberty.robot.beans.GPIOBean;
+import com.liberty.robot.messages.KeyPressedMessage;
 
 /**
  * Created by Dmytro_Kovalskyi on 25.05.2015.

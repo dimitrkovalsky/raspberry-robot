@@ -1,4 +1,4 @@
-package com.epam.robot.helpers;
+package com.liberty.robot.helpers;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

@@ -47,10 +47,17 @@
             <artifactId>jackson-core</artifactId>
             <version>2.2.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.martiansoftware</groupId>
+            <artifactId>jsap</artifactId>
+            <version>2.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
-        <finalName>robot-gpio</finalName>
+        <finalName>robot</finalName>
 
         <plugins>
             <plugin>
@@ -60,24 +67,6 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>**/log4j.properties</exclude>
-                    </excludes>
-                    <archive>
-                        <manifest>
-                            <!-- Jar file entry point -->
-                            <packageName>com.epam.robot</packageName>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>com.epam.robot.GPIO</mainClass>
-                            <classpathPrefix>lib/</classpathPrefix>
-                        </manifest>
-                    </archive>
                 </configuration>
             </plugin>
 
@@ -116,7 +105,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.epam.robot.Runner</mainClass>
+                            <mainClass>com.liberty.robot.Runner</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
