@@ -1,11 +1,11 @@
 package com.liberty.robot.helpers;
 
 import com.liberty.robot.common.Config;
+import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Switch;
-import com.martiansoftware.jsap.UnflaggedOption;
 
 /**
  * Created by Dmytro_Kovalskyi on 12.06.2015.
@@ -30,16 +30,23 @@ public class ConsoleParser {
                 .setLongFlag("microphone");
             microphoneOpt.setHelp("Record voice from microphone and sent into server");
 
-            UnflaggedOption ipOpt = new UnflaggedOption("ip")
+            Switch helpOpt = new Switch("help")
+                .setShortFlag('h')
+                .setLongFlag("help");
+            helpOpt.setHelp("Show help information");
+
+            FlaggedOption ipOpt = new FlaggedOption("ip")
                 .setStringParser(JSAP.STRING_PARSER)
+                .setLongFlag("ip")
+                .setShortFlag('i')
                 .setRequired(true)
-                .setDefault("127.0.0.1")
-                .setGreedy(true);
+                .setDefault("127.0.0.1");
             ipOpt.setHelp("Use to set appropriate ip for concrete server");
 
             jsap.registerParameter(speakersOpt);
             jsap.registerParameter(microphoneOpt);
             jsap.registerParameter(ipOpt);
+            jsap.registerParameter(helpOpt);
         } catch(JSAPException e) {
             System.err.println("[ConsoleParser] init error : " + e.getMessage());
         }
@@ -47,7 +54,7 @@ public class ConsoleParser {
 
     public boolean parse(String[] args) {
         JSAPResult config = jsap.parse(args);
-        boolean result;
+        boolean result = false;
         if(!config.success()) {
 
             System.err.println();
@@ -63,10 +70,14 @@ public class ConsoleParser {
             System.err.println(jsap.getHelp());
             result = false;
         } else {
-            Config.SPEAKERS_ENABLED = config.getBoolean("speakers");
-            Config.VOICE_RECORDING_ENABLED = config.getBoolean("microphone");
-            Config.SERVER_IP = config.getString("ip");
-            result = true;
+            if(config.getBoolean("help")) {
+                System.out.println(jsap.getHelp());
+            } else {
+                Config.SPEAKERS_ENABLED = config.getBoolean("speakers");
+                Config.VOICE_RECORDING_ENABLED = config.getBoolean("microphone");
+                Config.SERVER_IP = config.getString("ip");
+                result = true;
+            }
         }
         return result;
     }
