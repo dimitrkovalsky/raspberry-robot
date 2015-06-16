@@ -35,6 +35,11 @@ public class ConsoleParser {
                 .setLongFlag("help");
             helpOpt.setHelp("Show help information");
 
+            Switch voiceLog = new Switch("voice-log")
+                .setShortFlag('v')
+                .setLongFlag("voice-log");
+            helpOpt.setHelp("Enable voice logging");
+
             FlaggedOption ipOpt = new FlaggedOption("ip")
                 .setStringParser(JSAP.STRING_PARSER)
                 .setLongFlag("ip")
@@ -47,6 +52,7 @@ public class ConsoleParser {
             jsap.registerParameter(microphoneOpt);
             jsap.registerParameter(ipOpt);
             jsap.registerParameter(helpOpt);
+            jsap.registerParameter(voiceLog);
         } catch(JSAPException e) {
             System.err.println("[ConsoleParser] init error : " + e.getMessage());
         }
@@ -76,6 +82,7 @@ public class ConsoleParser {
                 Config.SPEAKERS_ENABLED = config.getBoolean("speakers");
                 Config.VOICE_RECORDING_ENABLED = config.getBoolean("microphone");
                 Config.SERVER_IP = config.getString("ip");
+                Config.VOICE_LOG_ENABLED = config.getBoolean("voice-log");
                 result = true;
             }
         }
