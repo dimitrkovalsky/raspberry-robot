@@ -13,7 +13,12 @@
         <maven.min.version>3.0.0</maven.min.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+    <repositories>
+        <repository>
+            <id>Sonatype OSS Snapshot Repository</id>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>com.pi4j</groupId>
