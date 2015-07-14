@@ -20,4 +20,6 @@ abstract public class GenericMessage {
     public void setMessageType(int messageType) {
         this.messageType = messageType;
     }
+    
+    public abstract Object getData(); 
 }

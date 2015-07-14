@@ -28,4 +28,9 @@ public class KeyPressedMessage extends GenericMessage {
                 "keyCode=" + keyCode +
                 '}';
     }
+
+    @Override
+    public Object getData() {
+        return keyCode;
+    }
 }
