@@ -1,7 +1,6 @@
 package com.liberty.robot.communication.wakeUp;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class WakePacket {
@@ -173,4 +172,17 @@ public class WakePacket {
        return wakePacketIsReceived;
     }
 
+    @Override
+    public String toString() {
+        return "WakePacket{" +
+            "address=" + address +
+            ", command=" + command +
+            ", data=" + data +
+            ", CodeErr=" + CodeErr +
+            ", flagFESC=" + flagFESC +
+            ", state=" + state +
+            ", rxdataCnt=" + rxdataCnt +
+            ", rxAddressIsPresent=" + rxAddressIsPresent +
+            '}';
+    }
 }

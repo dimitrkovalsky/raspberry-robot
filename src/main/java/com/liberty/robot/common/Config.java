@@ -9,6 +9,7 @@ public class Config {
     public static boolean SPEAKERS_ENABLED = true;
     public static String SERVER_IP = "127.0.0.1";
     public static int VOICE_BUFFER_SIZE = 1024;
+    public static byte ARDUINO_ADDRESS = 0;  // UART device
 
     public static String show() {
         return "Config{" +
