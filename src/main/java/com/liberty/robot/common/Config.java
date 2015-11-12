@@ -4,9 +4,9 @@ package com.liberty.robot.common;
  * Created by Dmytro_Kovalskyi on 11.06.2015.
  */
 public class Config {
-    public static boolean VOICE_LOG_ENABLED = true;
-    public static boolean VOICE_RECORDING_ENABLED = true;
-    public static boolean SPEAKERS_ENABLED = true;
+    public static boolean VOICE_LOG_ENABLED = false;
+    public static boolean VOICE_RECORDING_ENABLED = false;
+    public static boolean SPEAKERS_ENABLED = false;
     public static String SERVER_IP = "127.0.0.1";
     public static int VOICE_BUFFER_SIZE = 1024;
     public static byte ARDUINO_ADDRESS = 0;  // UART device

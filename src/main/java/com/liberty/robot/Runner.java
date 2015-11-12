@@ -14,10 +14,10 @@ public class Runner {
         ConsoleParser consoleParser = new ConsoleParser();
         if(consoleParser.parse(args)) {
             System.out.println(Config.show());
-            Initializer initializer = new Initializer();
-            initializer.initialize();
         } else {
             System.exit(1);
         }
+        Initializer initializer = new Initializer();
+        initializer.initialize();
     }
 }
