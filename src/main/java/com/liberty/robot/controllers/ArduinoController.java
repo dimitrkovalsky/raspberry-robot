@@ -3,7 +3,7 @@ package com.liberty.robot.controllers;
 import com.liberty.robot.communication.wakeUp.WakePacket;
 import com.liberty.robot.communication.wakeUp.WakeUpSerial;
 import com.liberty.robot.helpers.WakeHelper;
-import com.liberty.robot.messages.GenericMessage;
+import com.liberty.robot.messages.GenericRequest;
 
 import static utils.LoggingUtil.error;
 import static utils.LoggingUtil.info;
@@ -40,7 +40,7 @@ public class ArduinoController {
         }
     }
 
-    public void send(GenericMessage message) {
+    public void send(GenericRequest message) {
         info("[ArduinoController]  send method called with : " + message);
         WakePacket wp = WakeHelper.convert(message);
         try {

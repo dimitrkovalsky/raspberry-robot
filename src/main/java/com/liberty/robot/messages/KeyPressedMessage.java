@@ -1,18 +1,12 @@
 package com.liberty.robot.messages;
 
-import com.liberty.robot.common.MessageTypes;
-
 /**
  * User: dimitr
  * Date: 11.05.2015
  * Time: 11:01
  */
-public class KeyPressedMessage extends GenericMessage {
+public class KeyPressedMessage {
     private int keyCode;
-
-    public KeyPressedMessage() {
-        super(MessageTypes.KEY_PRESSED);
-    }
 
     public int getKeyCode() {
         return keyCode;
@@ -27,10 +21,5 @@ public class KeyPressedMessage extends GenericMessage {
         return "KeyPressedMessage{" +
                 "keyCode=" + keyCode +
                 '}';
-    }
-
-    @Override
-    public Object getData() {
-        return keyCode;
     }
 }

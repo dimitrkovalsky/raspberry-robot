@@ -2,7 +2,7 @@ package com.liberty.robot.helpers;
 
 import com.liberty.robot.common.Config;
 import com.liberty.robot.communication.wakeUp.WakePacket;
-import com.liberty.robot.messages.GenericMessage;
+import com.liberty.robot.messages.GenericRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -12,11 +12,11 @@ import java.io.ObjectOutputStream;
  * Created by Dmytro_Kovalskyi on 15.07.2015.
  */
 public class WakeHelper {
-    public static <T extends GenericMessage> WakePacket convert(T message) {
+    public static <T extends GenericRequest> WakePacket convert(T message) {
         WakePacket wp = new WakePacket();
         wp.setAddress(Config.ARDUINO_ADDRESS);
         wp.setCommand((byte) message.getMessageType());
-        byte[] bytes = toBytes(message.getData());
+        byte[] bytes = new byte[]{};// TODO: FIX toBytes(message.getData());
         try {
             wp.setData(bytes);
         } catch(Exception e) {
