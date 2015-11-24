@@ -26,12 +26,12 @@ public class LoggingUtil {
      * Logging without notification send.
      */
     public static void localInfo(Object caller, String message) {
-        String finalMessage = "[" + caller.getClass() + "] " + message;
+        String finalMessage = "[" + caller.getClass().getSimpleName() + "] " + message;
         System.out.println(finalMessage);
     }
 
     public static void info(Object caller, String message) {
-        String finalMessage = "[" + caller.getClass() + "] " + message;
+        String finalMessage = "[" + caller.getClass().getSimpleName() + "] " + message;
         System.out.println(finalMessage);
         sendLoggingMessage(Level.INFO, finalMessage);
     }
@@ -40,18 +40,18 @@ public class LoggingUtil {
      * Logging without notification send.
      */
     public static void localError(Object caller, String message) {
-        String finalMessage = "ERROR [" + caller.getClass() + "] " + message;
+        String finalMessage = "ERROR [" + caller.getClass().getSimpleName() + "] " + message;
         System.err.println(finalMessage);
     }
 
     public static void error(Object caller, String message) {
-        String finalMessage = "ERROR [" + caller.getClass() + "] " + message;
+        String finalMessage = "ERROR [" + caller.getClass().getSimpleName() + "] " + message;
         System.err.println(finalMessage);
         sendLoggingMessage(Level.SEVERE, finalMessage);
     }
 
     public static void error(Object caller, String message, Exception e) {
-        String finalMessage = "ERROR [" + caller.getClass() + "] " + message + ". " + e.getMessage();
+        String finalMessage = "ERROR [" + caller.getClass().getSimpleName() + "] " + message + ". " + e.getMessage();
         System.err.println(finalMessage);
         sendLoggingMessage(Level.SEVERE, finalMessage);
     }
@@ -60,7 +60,7 @@ public class LoggingUtil {
      * Logging without notification send.
      */
     public static void localError(Object caller, String message, Exception e) {
-        String finalMessage = "ERROR [" + caller.getClass() + "] " + message + ". " + e.getMessage();
+        String finalMessage = "ERROR [" + caller.getClass().getSimpleName() + "] " + message + ". " + e.getMessage();
         System.err.println(finalMessage);
     }
 
@@ -68,12 +68,12 @@ public class LoggingUtil {
      * Logging without notification send.
      */
     public static void localError(Object caller, Exception e) {
-        String finalMessage = "ERROR [" + caller.getClass() + "] " + e.getMessage();
+        String finalMessage = "ERROR [" + caller.getClass().getSimpleName() + "] " + e.getMessage();
         System.err.println(finalMessage);
     }
 
     public static void error(Object caller, Exception e) {
-        String finalMessage = "ERROR [" + caller.getClass() + "] " + e.getMessage();
+        String finalMessage = "ERROR [" + caller.getClass().getSimpleName() + "] " + e.getMessage();
         System.err.println(finalMessage);
         sendLoggingMessage(Level.SEVERE, finalMessage);
     }
