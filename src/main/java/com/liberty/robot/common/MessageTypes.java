@@ -6,6 +6,7 @@ package com.liberty.robot.common;
 public interface MessageTypes {
     byte CONNECTION_ESTABLISHED = 10;
     byte KEY_PRESSED = 11;
+    byte STOP_MOVEMENT = 25;
     byte PIN_TOGGLE = 20;
     byte LOGGING_MESSAGE = 90;
     byte DIODE_BLINK = 100;

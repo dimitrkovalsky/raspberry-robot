@@ -54,6 +54,7 @@ public class TransmissionManger implements Runnable, EventListener {
             localInfo(this, "Connecting to " + address + " and port " + ConnectionProperties.MESSAGE_PORT);
             Socket socket = new Socket(ipAddress, ConnectionProperties.MESSAGE_PORT);
             handler = new Handler(socket);
+            info("RASPBERRY connected to server");
         }
         catch (Exception e) {
             localError(this, " error connecting to server " + e.getMessage());
@@ -81,7 +82,7 @@ public class TransmissionManger implements Runnable, EventListener {
                 new Thread(this::read).start();
             }
             catch (Exception e) {
-                localError(this, "[TransmissionManger] error : " + e.getMessage());
+                localError(this, " error : " + e.getMessage());
             }
         }
 
@@ -99,7 +100,7 @@ public class TransmissionManger implements Runnable, EventListener {
                 }
             }
             catch (Throwable t) {
-                localError(this, "Error : " + t.getMessage());
+                localError(this, "Error : " + t.getMessage());  // TODO: switch to autonomous mode
             }
         }
 

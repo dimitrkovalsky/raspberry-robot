@@ -2,6 +2,8 @@ package com.liberty.robot.beans;
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.impl.PinImpl;
+import com.pi4j.wiringpi.Gpio;
+import com.pi4j.wiringpi.SoftPwm;
 
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -16,45 +18,122 @@ import static utils.LoggingUtil.info;
  */
 public class GPIOBean {
     public static final int MAX_PIN_NUMBER = 29;
+    public static final int SERVO_PIN_NUMBER = 1;
+    public static final int MAX_SERVO_RANGE = 100;
+    public static final int MAX_SERVO_ANGLE = 180;
+    public static final int MIN_SERVO_ANGLE = 0;
+    public static final int DEFAULT_SERVO_ANGLE = 90;
+    private int currentServoAngle = DEFAULT_SERVO_ANGLE;
     private boolean turnedOn = false;
     private final GpioController gpio = GpioFactory.getInstance();
     private Map<Integer, GpioPinDigitalOutput> pins = new HashMap<>();
     private GpioPinDigitalOutput redPin = null;
     private GpioPinDigitalOutput greenPin = null;
     private GpioPinDigitalOutput yellowPin = null;
+    //    private GpioPinDigitalOutput pwm = null;
+
 
     public void init() {
         System.out.println("Initializing GPIOBean");
-        redPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_19, "MyLED11", PinState.LOW);
-        greenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_21, "MyLED12", PinState.LOW);
-        yellowPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_11, "MyLED13", PinState.LOW);
+        redPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "MyLED11", PinState.LOW);
+        greenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "MyLED12", PinState.LOW);
+        yellowPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED13", PinState.LOW);
 
         redPin.setShutdownOptions(true, PinState.LOW);
         greenPin.setShutdownOptions(true, PinState.LOW);
         yellowPin.setShutdownOptions(true, PinState.LOW);
+
+        Gpio.wiringPiSetup();
+        SoftPwm.softPwmCreate(SERVO_PIN_NUMBER, 0, MAX_SERVO_RANGE);
+        updateServoAngle();
     }
 
-    public void toggle() {
-        try {
-            System.out.println("[GPIOBean] toggle : " + !turnedOn);
-            turnedOn = !turnedOn;
-            yellowPin.setState(turnedOn);//high();
-            if (turnedOn) {
-                greenPin.high();
-                redPin.low();
+    private void updateServoAngle() {
+        SoftPwm.softPwmWrite(SERVO_PIN_NUMBER, getServoPwmValue());
+    }
+
+    private int getServoPwmValue() {
+        int pwmValue = currentServoAngle * MAX_SERVO_RANGE / MAX_SERVO_ANGLE;
+        info(this, "angle : " + currentServoAngle + " pwmValue : " + pwmValue);
+        return pwmValue;
+    }
+
+
+    public void moveForward() {
+        yellowPin.high();
+        redPin.low();
+        greenPin.high();
+        showStatus();
+    }
+
+    public void moveBackwards() {
+        yellowPin.high();
+        redPin.high();
+        greenPin.low();
+        showStatus();
+    }
+
+    public void stopMovement() {
+        info(this, "Trying to stop movement");
+        yellowPin.low();
+        redPin.low();
+        greenPin.low();
+        showStatus();
+        currentServoAngle = DEFAULT_SERVO_ANGLE;
+        updateServoAngle();
+    }
+
+    private void testPwm() throws InterruptedException {
+        Gpio.wiringPiSetup();
+
+        // softPwmCreate(int pin, int value, int range)
+        // the range is set like (min=0 ; max=100)
+        SoftPwm.softPwmCreate(SERVO_PIN_NUMBER, 0, 100);
+
+        int counter = 0;
+        while (counter < 3) {
+            // fade LED to fully ON
+            for (int i = 0; i <= 100; i++) {
+                // softPwmWrite(int pin, int value)
+                // This updates the PWM value on the given pin. The value is
+                // checked to be in-range and pins
+                // that haven't previously been initialized via softPwmCreate
+                // will be silently ignored.
+                SoftPwm.softPwmWrite(SERVO_PIN_NUMBER, i);
+                Thread.sleep(25);
             }
-            else {
-                greenPin.low();
-                redPin.high();
+
+            // fade LED to fully OFF
+            for (int i = 100; i >= 0; i--) {
+                SoftPwm.softPwmWrite(SERVO_PIN_NUMBER, i);
+                Thread.sleep(25);
             }
-            System.out.println("YELLOW address" + yellowPin.getPin().getAddress());
-            System.out.println("Y : " + yellowPin.getState());
-            System.out.println("R : " + redPin.getState());
-            System.out.println("G : " + greenPin.getState());
+            counter++;
         }
-        catch (Exception e) {
-            System.err.println("[GPIOBean] error : " + e.getMessage());
-        }
+    }
+
+    public void turnLeft(int angle) {
+        info("Trying to turn left on " + angle + " degrees");
+        if (currentServoAngle - angle < MIN_SERVO_ANGLE)
+            currentServoAngle = MIN_SERVO_ANGLE;
+        else
+            currentServoAngle -= angle;
+        updateServoAngle();
+    }
+
+    public void turnRight(int angle) {
+        info("Trying to turn right on " + angle + " degrees");
+        if (currentServoAngle + angle > MAX_SERVO_ANGLE)
+            currentServoAngle = MAX_SERVO_ANGLE;
+        else
+            currentServoAngle += angle;
+        updateServoAngle();
+    }
+
+    private void showStatus() {
+        info("Y : " + yellowPin.getState() + "\t" +
+                "R : " + redPin.getState() + "\t" +
+                "G : " + greenPin.getState());
     }
 
     public void togglePin(int pinNumber) {
@@ -79,7 +158,7 @@ public class GPIOBean {
             return;
         }
         pin.toggle();
-        info(this, " Changed state of pin#" + pinNumber + " address " + pin.getPin().getAddress() + "into " + pin
+        info(this, " Changed state of pin#" + pinNumber + " address " + pin.getPin().getAddress() + " into " + pin
                 .getState());
     }
 
@@ -95,7 +174,7 @@ public class GPIOBean {
     }
 
     private Optional<Pin> createPin(int address) {
-        if (isValidPin(address)) {
+        if (!isValidPin(address)) {
             error(this, "Address should be in range [0; 29]");
             return Optional.empty();
         }
@@ -105,7 +184,9 @@ public class GPIOBean {
         return Optional.of(pin);
     }
 
-    private boolean isValidPin(int address) {return address < 0 || address > MAX_PIN_NUMBER;}
+    private boolean isValidPin(int address) {
+        return address >= 0 || address <= MAX_PIN_NUMBER;
+    }
 
     public void shutdown() {
         gpio.shutdown();

@@ -21,7 +21,7 @@ public class GPIOController {
     private ArduinoController arduinoController;
 
     public GPIOController() {
-        init(false);
+        init(true);
     }
 
     public void onMessage(GenericRequest message) {
@@ -37,14 +37,31 @@ public class GPIOController {
                         .convertEntity(message.getRequestData(), PinToggleMessage.class);
                 onPinToggleMessage(pinMessage);
                 break;
+            case MessageTypes.STOP_MOVEMENT:
+                executeWithCatch(() -> gpioBean.stopMovement());
+                break;
+            default:
+                error(this, "Unrecognized message type : " + message.getMessageType());
         }
 
     }
 
     private void onKeyPressed(KeyPressedMessage message) {
-        if (message.getKeyCode() == 38) { // Up
-            executeWithCatch(() -> gpioBean.toggle());
-            //            arduinoController.send(new BlinkMessage());
+        switch (message.getKeyCode()) { // Up
+            case 38:
+                executeWithCatch(() -> gpioBean.moveForward());
+                break;
+            case 40:
+                executeWithCatch(() -> gpioBean.moveBackwards());
+                break;
+            case 37:
+                executeWithCatch(() -> gpioBean.turnLeft(10));
+                break;
+            case 39:
+                executeWithCatch(() -> gpioBean.turnRight(10));
+                break;
+            default:
+                error(this, "Unrecognized key code : " + message.getKeyCode());
         }
     }
 
