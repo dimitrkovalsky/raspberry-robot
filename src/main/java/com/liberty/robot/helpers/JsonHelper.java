@@ -3,6 +3,7 @@ package com.liberty.robot.helpers;
 import com.liberty.robot.messages.KeyPressedMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.istack.internal.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class JsonHelper {
         }
     }
 
+    @Nullable
     public static <T> T convertEntity(Object data, Class clazz) {
         try {
             return (T) mapper.convertValue(data, clazz);

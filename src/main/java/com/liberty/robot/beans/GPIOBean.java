@@ -2,9 +2,8 @@ package com.liberty.robot.beans;
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.impl.PinImpl;
-import com.pi4j.wiringpi.Gpio;
-import com.pi4j.wiringpi.SoftPwm;
 
+import javax.annotation.PreDestroy;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,21 +16,14 @@ import static utils.LoggingUtil.info;
  * Created by Dmytro_Kovalskyi on 25.05.2015.
  */
 public class GPIOBean {
+    ServoBean servoBean = new ServoBean();
     public static final int MAX_PIN_NUMBER = 29;
-    public static final int SERVO_PIN_NUMBER = 1;
-    public static final int MAX_SERVO_RANGE = 100;
-    public static final int MAX_SERVO_ANGLE = 180;
-    public static final int MIN_SERVO_ANGLE = 0;
-    public static final int DEFAULT_SERVO_ANGLE = 90;
-    private int currentServoAngle = DEFAULT_SERVO_ANGLE;
-    private boolean turnedOn = false;
+
     private final GpioController gpio = GpioFactory.getInstance();
     private Map<Integer, GpioPinDigitalOutput> pins = new HashMap<>();
     private GpioPinDigitalOutput redPin = null;
     private GpioPinDigitalOutput greenPin = null;
     private GpioPinDigitalOutput yellowPin = null;
-    //    private GpioPinDigitalOutput pwm = null;
-
 
     public void init() {
         System.out.println("Initializing GPIOBean");
@@ -42,35 +34,27 @@ public class GPIOBean {
         redPin.setShutdownOptions(true, PinState.LOW);
         greenPin.setShutdownOptions(true, PinState.LOW);
         yellowPin.setShutdownOptions(true, PinState.LOW);
-
-        Gpio.wiringPiSetup();
-        SoftPwm.softPwmCreate(SERVO_PIN_NUMBER, 0, MAX_SERVO_RANGE);
-        updateServoAngle();
+        //        Gpio.wiringPiSetup();
+        //        SoftPwm.softPwmCreate(SERVO_PIN_NUMBER, 0, MAX_SERVO_RANGE);
+        //        updateServoAngle();
     }
 
-    private void updateServoAngle() {
-        SoftPwm.softPwmWrite(SERVO_PIN_NUMBER, getServoPwmValue());
+    public void execute() {
+        info(this, "Executes any action");
+        servoBean.execute();
+        info(this, "Execution completed");
     }
-
-    private int getServoPwmValue() {
-        int pwmValue = currentServoAngle * MAX_SERVO_RANGE / MAX_SERVO_ANGLE;
-        info(this, "angle : " + currentServoAngle + " pwmValue : " + pwmValue);
-        return pwmValue;
-    }
-
 
     public void moveForward() {
         yellowPin.high();
         redPin.low();
         greenPin.high();
-        showStatus();
     }
 
     public void moveBackwards() {
         yellowPin.high();
         redPin.high();
         greenPin.low();
-        showStatus();
     }
 
     public void stopMovement() {
@@ -78,56 +62,18 @@ public class GPIOBean {
         yellowPin.low();
         redPin.low();
         greenPin.low();
-        showStatus();
-        currentServoAngle = DEFAULT_SERVO_ANGLE;
-        updateServoAngle();
-    }
-
-    private void testPwm() throws InterruptedException {
-        Gpio.wiringPiSetup();
-
-        // softPwmCreate(int pin, int value, int range)
-        // the range is set like (min=0 ; max=100)
-        SoftPwm.softPwmCreate(SERVO_PIN_NUMBER, 0, 100);
-
-        int counter = 0;
-        while (counter < 3) {
-            // fade LED to fully ON
-            for (int i = 0; i <= 100; i++) {
-                // softPwmWrite(int pin, int value)
-                // This updates the PWM value on the given pin. The value is
-                // checked to be in-range and pins
-                // that haven't previously been initialized via softPwmCreate
-                // will be silently ignored.
-                SoftPwm.softPwmWrite(SERVO_PIN_NUMBER, i);
-                Thread.sleep(25);
-            }
-
-            // fade LED to fully OFF
-            for (int i = 100; i >= 0; i--) {
-                SoftPwm.softPwmWrite(SERVO_PIN_NUMBER, i);
-                Thread.sleep(25);
-            }
-            counter++;
-        }
     }
 
     public void turnLeft(int angle) {
-        info("Trying to turn left on " + angle + " degrees");
-        if (currentServoAngle - angle < MIN_SERVO_ANGLE)
-            currentServoAngle = MIN_SERVO_ANGLE;
-        else
-            currentServoAngle -= angle;
-        updateServoAngle();
+        servoBean.turnLeft(angle);
     }
 
     public void turnRight(int angle) {
-        info("Trying to turn right on " + angle + " degrees");
-        if (currentServoAngle + angle > MAX_SERVO_ANGLE)
-            currentServoAngle = MAX_SERVO_ANGLE;
-        else
-            currentServoAngle += angle;
-        updateServoAngle();
+        servoBean.turnRight(angle);
+    }
+
+    public void setServoAngle(int angle) {
+        servoBean.setServoAngle(angle);
     }
 
     private void showStatus() {
@@ -188,9 +134,8 @@ public class GPIOBean {
         return address >= 0 || address <= MAX_PIN_NUMBER;
     }
 
+    @PreDestroy
     public void shutdown() {
         gpio.shutdown();
     }
-
-
 }

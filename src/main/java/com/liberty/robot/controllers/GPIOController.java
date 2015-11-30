@@ -7,6 +7,7 @@ import com.liberty.robot.helpers.JsonHelper;
 import com.liberty.robot.messages.GenericRequest;
 import com.liberty.robot.messages.KeyPressedMessage;
 import com.liberty.robot.messages.PinToggleMessage;
+import com.liberty.robot.messages.SetAngleMessage;
 
 import static utils.LoggingUtil.error;
 import static utils.LoggingUtil.info;
@@ -39,6 +40,14 @@ public class GPIOController {
                 break;
             case MessageTypes.STOP_MOVEMENT:
                 executeWithCatch(() -> gpioBean.stopMovement());
+                break;
+            case MessageTypes.EXECUTE_ACTION:
+                executeWithCatch(() -> gpioBean.execute());
+                break;
+            case MessageTypes.SET_SERVO_ANGLE:
+                SetAngleMessage angleMessage = JsonHelper
+                        .convertEntity(message.getRequestData(), SetAngleMessage.class);
+                executeWithCatch(() -> gpioBean.setServoAngle(angleMessage.getAngle()));
                 break;
             default:
                 error(this, "Unrecognized message type : " + message.getMessageType());
