@@ -4,6 +4,7 @@ import com.liberty.robot.controllers.ArduinoController;
 import com.liberty.robot.helpers.Direction;
 import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.SoftPwm;
+import utils.RobotParams;
 
 import static utils.LoggingUtil.error;
 import static utils.LoggingUtil.info;
@@ -16,9 +17,9 @@ import static utils.LoggingUtil.info;
 public class ServoBean {
     public static final int SERVO_PIN_NUMBER = 1;
     public static final int MAX_SERVO_RANGE = 0;
-    public static final int MAX_SERVO_ANGLE = 156;
-    public static final int MIN_SERVO_ANGLE = 54;
-    public static final int DEFAULT_SERVO_ANGLE = 105;
+    public static final int MAX_SERVO_ANGLE = RobotParams.MIN_STEERING_ANGLE;
+    public static final int MIN_SERVO_ANGLE = RobotParams.MAX_STEERING_ANGLE;
+    public static final int DEFAULT_SERVO_ANGLE = RobotParams.CENTER_STEERING_ANGLE;
     private int currentServoAngle = DEFAULT_SERVO_ANGLE;
     private int previousServoAngle = DEFAULT_SERVO_ANGLE;
     private ArduinoController arduinoController;
@@ -79,7 +80,7 @@ public class ServoBean {
             currentServoAngle -= angle;
 //        updateServoAngle();
         //byte bAngle = 0;
-        info("Current angle : " + angle + " degrees");
+        info("Current ANGLE : " + currentServoAngle + " degrees");
         arduinoController.send((byte) currentServoAngle);
     }
 
@@ -90,7 +91,7 @@ public class ServoBean {
         else
             currentServoAngle += angle;
 //        updateServoAngle();
-        info("Current angle : " + angle + " degrees");
+        info("Current ANGLE : " + currentServoAngle + " degrees");
         arduinoController.send((byte) currentServoAngle);
     }
 

@@ -5,6 +5,7 @@ import com.liberty.robot.communication.wakeUp.WakePacket;
 import com.liberty.robot.helpers.Direction;
 import com.liberty.robot.helpers.WakeHelper;
 import com.liberty.robot.messages.GenericRequest;
+import com.pi4j.io.serial.SerialDataEvent;
 
 import static utils.LoggingUtil.error;
 import static utils.LoggingUtil.info;
@@ -22,11 +23,15 @@ public class ArduinoController {
     public void init() {
         try {
             serial = new SerialPort();
-            serial.open();
+            serial.open(this::onEvent);
             // serial.addWakeUpListener(this::onMessageReceived);
         } catch(Exception e) {
             error(this, "init error : " + e.getMessage());
         }
+    }
+
+    private void onEvent(SerialDataEvent serialDataEvent) {
+        info(this, "received packet : " + serialDataEvent.getData());
     }
 
     public byte[] createCommand(byte angle) {
@@ -84,8 +89,7 @@ public class ArduinoController {
         }
 
         byte checksum = 0;
-        for(byte i = 2; i < 7; i++)
-        {
+        for(byte i = 2; i < 7; i++) {
             checksum ^= command[i];
         }
         command[7] = checksum;

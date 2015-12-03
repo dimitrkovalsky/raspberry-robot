@@ -2,6 +2,7 @@ package com.liberty.robot.communication.wakeUp;
 
 import com.pi4j.io.serial.Serial;
 //import com.pi4j.io.serial.SerialDataEvent;
+import com.pi4j.io.serial.SerialDataListener;
 import com.pi4j.io.serial.SerialFactory;
 import java.util.Arrays;
 
@@ -13,17 +14,6 @@ public class SerialPort {
     public SerialPort() {
         // create an instance of the serial communications class
         serial = SerialFactory.createInstance();
-        
-        /* якщо не гавнокодити - то лісенер треба було б прикрутити сюди )
-        // create and register the serial data listener
-        serial.addListener(new SerialDataListener() {
-            @Override
-            public void dataReceived(SerialDataEvent event) {
-                // print out the data received to the console
-                System.out.print(event.getData());
-            }
-        });
-        */
     }
 
     public void putByte(byte bt) {
@@ -32,8 +22,9 @@ public class SerialPort {
 
     public void putbuf(byte[] buf) {
         info(this, "Send to arduino : " + Arrays.toString(buf));
-        for (byte bt : buf)
-            serial.write(bt);
+//        for (byte bt : buf)
+//            serial.write(bt);
+        serial.write(buf);
     }
 
     public byte getByte() throws Exception {
@@ -48,7 +39,8 @@ public class SerialPort {
         serial.close();
     }
 
-    public void open() throws Exception {
+    public void open(SerialDataListener onEvent) throws Exception {
         serial.open(Serial.DEFAULT_COM_PORT, 9600);
+        //serial.addListener(onEvent);
     }
 }
