@@ -22,9 +22,9 @@ public class SerialPort {
 
     public void putbuf(byte[] buf) {
         info(this, "Send to arduino : " + Arrays.toString(buf));
-//        for (byte bt : buf)
-//            serial.write(bt);
-        serial.write(buf);
+        for (byte bt : buf)
+            serial.write(bt);
+//        serial.write(buf);
     }
 
     public byte getByte() throws Exception {
