@@ -1,4 +1,4 @@
-package com.liberty.robot.controllers;
+package com.liberty.robot.beans;
 
 import com.liberty.robot.communication.wakeUp.SerialPort;
 import com.liberty.robot.communication.wakeUp.WakePacket;
@@ -13,10 +13,10 @@ import static utils.LoggingUtil.info;
 /**
  * Created by Dmytro_Kovalskyi on 15.07.2015.
  */
-public class ArduinoController {
+public class ArduinoBean {
     private SerialPort serial;
 
-    public ArduinoController() {
+    public ArduinoBean() {
         init();
     }
 
@@ -58,19 +58,14 @@ public class ArduinoController {
         return command;
     }
 
-//    public void send() {
-//        byte[] command = createCommand();
-//        serial.putbuf(command);
-//    }
-
-    public void send(byte angle) {
+    public void setSteering(byte angle) {
         byte[] command = createCommand(angle);
-        serial.putbuf(command);
+        serial.putBuffer(command);
     }
 
     public void send(Direction direction, byte angle) {
         byte[] command = createCommand(direction, angle);
-        serial.putbuf(command);
+        serial.putBuffer(command);
     }
 
     private byte[] createCommand(Direction direction, byte angle) {

@@ -1,7 +1,7 @@
 package com.liberty.robot.helpers;
 
 import com.liberty.robot.common.Config;
-import com.liberty.robot.controllers.GPIOController;
+import utils.MessageProcessor;
 import com.liberty.robot.controllers.VoiceController;
 import com.liberty.robot.transmission.TransmissionManger;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.io.IOException;
 public class Initializer {
     public void initialize() throws IOException {
         TransmissionManger transmission;
-        GPIOController controller = new GPIOController();
+        MessageProcessor controller = new MessageProcessor();
         VoiceController voiceController;
         transmission = new TransmissionManger(Config.SERVER_IP, controller::onMessage);
         voiceController = new VoiceController(Config.SERVER_IP);

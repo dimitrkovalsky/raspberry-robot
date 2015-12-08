@@ -20,11 +20,11 @@ public class SerialPort {
         serial.write(bt);
     }
 
-    public void putbuf(byte[] buf) {
+    public void putBuffer(byte[] buf) {
         info(this, "Send to arduino : " + Arrays.toString(buf));
-        for (byte bt : buf)
-            serial.write(bt);
-//        serial.write(buf);
+//        for (byte bt : buf)
+//            serial.write(bt);
+        serial.write(buf);
     }
 
     public byte getByte() throws Exception {

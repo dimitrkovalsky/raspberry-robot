@@ -1,6 +1,5 @@
 package com.liberty.robot.beans;
 
-import com.liberty.robot.controllers.ArduinoController;
 import com.liberty.robot.helpers.Direction;
 import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.SoftPwm;
@@ -22,7 +21,7 @@ public class ServoBean {
     public static final int DEFAULT_SERVO_ANGLE = RobotParams.CENTER_STEERING_ANGLE;
     private int currentServoAngle = DEFAULT_SERVO_ANGLE;
     private int previousServoAngle = DEFAULT_SERVO_ANGLE;
-    private ArduinoController arduinoController;
+    private ArduinoBean arduinoBean;
 
     public ServoBean() {
         try {
@@ -31,7 +30,7 @@ public class ServoBean {
             Gpio.pwmSetMode(Gpio.PWM_MODE_MS);
             Gpio.pwmSetClock(1920);
             Gpio.pwmSetRange(200);
-            arduinoController = new ArduinoController();
+            arduinoBean = new ArduinoBean();
         }
         catch (Exception e) {
             error(this, e);
@@ -41,7 +40,7 @@ public class ServoBean {
     public void execute() {
         try {
             byte angle = 0;
-            arduinoController.send(angle);
+            arduinoBean.setSteering(angle);
         }
         catch (Exception e) {
             error(this, e);
@@ -51,9 +50,7 @@ public class ServoBean {
 
     public void setServoAngle(byte angle) {
         try {
-//            info("PWM frequency : " + SystemInfo.getClockFrequencyPWM());
-//            Gpio.pwmWrite(SERVO_PIN_NUMBER, getServoPwmValue(angle));
-            arduinoController.send(angle);
+            arduinoBean.setSteering(angle);
         }
         catch (Exception e) {
             error(this, e);
@@ -61,27 +58,24 @@ public class ServoBean {
     }
 
     public void moveForward(){
-        arduinoController.send(Direction.FORWARD, (byte)currentServoAngle);
+        arduinoBean.send(Direction.FORWARD, (byte)currentServoAngle);
     }
 
     public void moveBackward(){
-        arduinoController.send(Direction.BACKWARD, (byte)currentServoAngle);
+        arduinoBean.send(Direction.BACKWARD, (byte)currentServoAngle);
     }
 
     public void stop(){
-        arduinoController.send(Direction.STOP, (byte)currentServoAngle);
+        arduinoBean.send(Direction.STOP, (byte)currentServoAngle);
     }
 
     public void turnLeft(int angle) {
-//        info("Trying to turn left on " + angle + " degrees");
         if (currentServoAngle - angle < MIN_SERVO_ANGLE)
             currentServoAngle = MIN_SERVO_ANGLE;
         else
             currentServoAngle -= angle;
-//        updateServoAngle();
-        //byte bAngle = 0;
         info("Current ANGLE : " + currentServoAngle + " degrees");
-        arduinoController.send((byte) currentServoAngle);
+        arduinoBean.setSteering((byte) currentServoAngle);
     }
 
     public void turnRight(int angle) {
@@ -90,9 +84,8 @@ public class ServoBean {
             currentServoAngle = MAX_SERVO_ANGLE;
         else
             currentServoAngle += angle;
-//        updateServoAngle();
         info("Current ANGLE : " + currentServoAngle + " degrees");
-        arduinoController.send((byte) currentServoAngle);
+        arduinoBean.setSteering((byte) currentServoAngle);
     }
 
     private void updateServoAngle() {
