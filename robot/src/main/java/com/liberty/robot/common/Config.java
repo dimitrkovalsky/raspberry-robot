@@ -16,9 +16,10 @@ public class Config {
     public static byte ARDUINO_ADDRESS = 0;  // UART device
 
     public static String VOICE_SAMPLES_FOLDER;
+    public static String PATH_SEPARATOR = SystemUtils.FILE_SEPARATOR;
 
     static {
-        if(SystemUtils.IS_OS_LINUX) {
+        if(SystemUtils.IS_OS_WINDOWS) {
             localInfo(Config.class, "Current OS is Windows");
             VOICE_SAMPLES_FOLDER = "D:\\voices\\";
         }
