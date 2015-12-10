@@ -39,6 +39,7 @@ public class VoiceSynthesizer {
     private static final String API_KEY = "24bdfb36-8faf-4223-afd6-17a855a6b7c2";
     public static final String HOLDER_PATH = Config.VOICE_SAMPLES_FOLDER + "holder.json";
     public static final String PHRASES_FILE_PATH = "../phrases.txt";
+    public static final String RASPBERRY_PHRASES_LOCATION = "/opt/java/phrases.txt";
     private VoiceConfigHolder holder;
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -72,8 +73,13 @@ public class VoiceSynthesizer {
 
     private void checkFiles() {
         try {
+            List<String> strings;
             URL resource = this.getClass().getResource(PHRASES_FILE_PATH);
-            List<String> strings = Files.readAllLines(Paths.get(resource.toURI()));
+            if(resource != null){
+                strings = Files.readAllLines(Paths.get(resource.toURI()));
+            }  else {
+                strings = Files.readAllLines(Paths.get(RASPBERRY_PHRASES_LOCATION));
+            }
             List<String> forUpdate = new ArrayList<>();
             for(String phrase : strings) {
                 if(phrase.startsWith("//")) {

@@ -27,7 +27,7 @@ public class MessageProcessor {
     private VoiceController voiceController;
 
     public MessageProcessor() {
-        init(false);
+        init(true);
     }
 
     public void onMessage(GenericRequest message) {
