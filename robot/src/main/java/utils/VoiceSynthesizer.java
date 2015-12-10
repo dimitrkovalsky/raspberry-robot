@@ -47,6 +47,7 @@ public class VoiceSynthesizer {
     }
 
     private void init() {
+        localInfo(this, "Initialization...");
         loadFiles();
         checkFiles();
     }
@@ -59,9 +60,7 @@ public class VoiceSynthesizer {
             }
             Path path = Paths.get(HOLDER_PATH);
             if(Files.exists(path)) {
-
                 holder = mapper.readValue(path.toFile(), VoiceConfigHolder.class);
-
             } else {
                 holder = new VoiceConfigHolder();
             }
@@ -94,28 +93,13 @@ public class VoiceSynthesizer {
             }
             for(String currentPhrase : forUpdate) {
                 localInfo(this, "Trying to load voice for : " + currentPhrase);
-                String file = loadAndSave(currentPhrase, VoiceConfig.VoiceGender.MALE);
-                synthesizeCached(file);
+                loadAndSave(currentPhrase, VoiceConfig.VoiceGender.MALE);
+                //loadAndSave(currentPhrase, VoiceConfig.VoiceGender.FEMALE);
+                //synthesizeCached(file);
             }
         } catch(Exception e) {
             error(this, e);
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        String apiKey = "24bdfb36-8faf-4223-afd6-17a855a6b7c2";
-        String text = URLEncoder.encode("Привет?", "UTF-8");
-        String lang = "ru-RU";
-        String url = "https://tts.voicetech.yandex.net/generate?text=" + text + "&format=" + FILE_FORMAT
-            + "&lang=" + lang
-            + "&speaker=ermil&emotion=evil&key=" + apiKey + "&robot=false";
-        System.out.println(url);
-
-
-// Get the response
-        //play(executeRequest(url));
-
-        System.in.read();
     }
 
     public void synthesize(Integer id, VoiceConfig.VoiceGender gender) {
@@ -250,7 +234,20 @@ public class VoiceSynthesizer {
         }
     }
 
-    public class VoiceConfigHolder {
+    /**
+     * Return al available phrases
+     *
+     * @return id -> phrase
+     */
+    public Map<String, Integer> getPhrases() {
+        return holder.getPhrases();
+    }
+
+    public int getCurrentVoiceCounter() {
+        return holder.counter;
+    }
+
+    public static class VoiceConfigHolder {
         private Map<String, Integer> phrases = new HashMap<>(); // Phrase --> Id
         private Map<Integer, String> ids = new HashMap<>(); // Id --> filename
         private Integer counter = 0;
@@ -281,6 +278,10 @@ public class VoiceSynthesizer {
 
         public Integer nextCount() {
             counter++;
+            return counter;
+        }
+
+        public Integer getCounter() {
             return counter;
         }
 

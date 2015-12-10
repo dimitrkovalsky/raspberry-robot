@@ -1,6 +1,7 @@
 package com.liberty.robot.transmission;
 
 import com.liberty.robot.common.ConnectionProperties;
+import com.liberty.robot.common.MessageTypes;
 import com.liberty.robot.helpers.EventListener;
 import com.liberty.robot.helpers.JsonHelper;
 import com.liberty.robot.messages.GenericRequest;
@@ -55,10 +56,17 @@ public class TransmissionManger implements Runnable, EventListener {
             Socket socket = new Socket(ipAddress, ConnectionProperties.MESSAGE_PORT);
             handler = new Handler(socket);
             info("RASPBERRY connected to server");
+            sendConnectedMessage();
         }
         catch (Exception e) {
             localError(this, " error connecting to server " + e.getMessage());
         }
+    }
+
+    private void sendConnectedMessage(){
+        GenericRequest request = new GenericRequest();
+        request.setMessageType(MessageTypes.CONNECTION_ESTABLISHED);
+        EventBus.fireEvent(request);
     }
 
     @Override

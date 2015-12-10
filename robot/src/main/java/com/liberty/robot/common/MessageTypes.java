@@ -9,6 +9,8 @@ public interface MessageTypes {
     byte PIN_TOGGLE = 20;
     byte SET_SERVO_ANGLE = 21;
     byte STOP_MOVEMENT = 25;
+    byte VOICE_SYNTHESIZE = 30;
+    byte LOAD_PHRASES = 31;
     byte LOGGING_MESSAGE = 90;
     byte EXECUTE_ACTION = 99;
     byte DIODE_BLINK = 100;

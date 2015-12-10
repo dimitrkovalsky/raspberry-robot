@@ -2,6 +2,7 @@ package utils;
 
 import com.liberty.robot.common.MessageTypes;
 import com.liberty.robot.controllers.MovementController;
+import com.liberty.robot.controllers.VoiceController;
 import com.liberty.robot.devices.DistanceMonitor;
 import com.liberty.robot.helpers.Executable;
 import com.liberty.robot.helpers.JsonHelper;
@@ -9,8 +10,10 @@ import com.liberty.robot.messages.GenericRequest;
 import com.liberty.robot.messages.KeyPressedMessage;
 import com.liberty.robot.messages.PinToggleMessage;
 import com.liberty.robot.messages.SetAngleMessage;
+import com.liberty.robot.messages.VoiceSynthesizeMessage;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
+import java.util.Map;
 
 import static utils.LoggingUtil.error;
 import static utils.LoggingUtil.info;
@@ -21,9 +24,10 @@ import static utils.LoggingUtil.info;
  */
 public class MessageProcessor {
     private MovementController movementController;
+    private VoiceController voiceController;
 
     public MessageProcessor() {
-        init(true);
+        init(false);
     }
 
     public void onMessage(GenericRequest message) {
@@ -50,10 +54,35 @@ public class MessageProcessor {
                     .convertEntity(message.getRequestData(), SetAngleMessage.class);
                 executeWithCatch(() -> movementController.setServoAngle(angleMessage.getAngle()));
                 break;
+            case MessageTypes.VOICE_SYNTHESIZE:
+                VoiceSynthesizeMessage voiceSynthesizeMessage = JsonHelper
+                    .convertEntity(message.getRequestData(), VoiceSynthesizeMessage.class);
+                onVoiceSynthesize(voiceSynthesizeMessage);
+                break;
+            case MessageTypes.LOAD_PHRASES:
+                onLoadPhrases();
+                break;
             default:
                 error(this, "Unrecognized message type : " + message.getMessageType());
         }
 
+    }
+
+    private void onLoadPhrases() {
+        Map<Integer, String> phrases = voiceController.getAvailablePhrases();
+        GenericRequest request = new GenericRequest();
+        request.setMessageType(MessageTypes.LOAD_PHRASES);
+        request.setRequestData(phrases);
+        EventBus.fireEvent(request);
+    }
+
+    private void onVoiceSynthesize(VoiceSynthesizeMessage voiceSynthesizeMessage) {
+        Integer phraseId = voiceSynthesizeMessage.getPhraseId();
+        if(phraseId == 0){
+            voiceController.synthesize(voiceSynthesizeMessage.getText());
+        } else {
+            voiceController.synthesize(phraseId);
+        }
     }
 
     private void onKeyPressed(KeyPressedMessage message) {
@@ -93,6 +122,7 @@ public class MessageProcessor {
 
     private void init(boolean useGpio) {
         try {
+            voiceController = new VoiceController();
             if(useGpio) {
                 info("Running MovementController initialization");
                 movementController = new MovementController();
