@@ -26,6 +26,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.github.sarxos</groupId>
+            <artifactId>webcam-capture-driver-v4l4j</artifactId>
+            <version>0.3.11</version>
+        </dependency>
+
+        <dependency>
             <groupId>xuggle</groupId>
             <artifactId>xuggle-xuggler</artifactId>
             <version>5.4</version>
